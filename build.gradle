@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+
+    id 'idea'
+    id 'eclipse'
+
+    id 'net.minecrell.licenser' version '0.1.2'
+}
+defaultTasks 'clean', 'licenseFormat'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group 'xyz.lexteam'
+version '1.0.0-SNAPSHOT'
+description = "Tangerine - Modular Discord bot framework."
+ext.url = 'http://www.lexteam.xyz/'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
+    maven {
+        url 'http://lutece.paris.fr/nexus/content/repositories/lutece_third_party/'
+    }
+    maven {
+        url 'http://jcenter.bintray.com/'
+    }
+}
+
+dependencies {
+    compile 'com.github.austinv11:Discord4j:dd0be93'
+}
+
+license {
+    header file('HEADER.txt')
+    include '**/*.java'
+    newLine = false
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.11'
+}
