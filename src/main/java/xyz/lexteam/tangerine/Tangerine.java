@@ -6,6 +6,7 @@
  */
 package xyz.lexteam.tangerine;
 
+import com.sk89q.intake.dispatcher.Dispatcher;
 import sx.blah.discord.api.IDiscordClient;
 import xyz.lexteam.eventbus.IEventBus;
 
@@ -17,4 +18,6 @@ public interface Tangerine {
     IEventBus getEventBus();
 
     IDiscordClient getDiscordClient();
+
+    Dispatcher getCommandDispatcher();
 }

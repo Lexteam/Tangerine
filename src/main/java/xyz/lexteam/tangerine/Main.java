@@ -6,6 +6,8 @@
  */
 package xyz.lexteam.tangerine;
 
+import com.sk89q.intake.dispatcher.Dispatcher;
+import com.sk89q.intake.dispatcher.SimpleDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
@@ -17,6 +19,7 @@ import xyz.lexteam.eventbus.IEventBus;
 import xyz.lexteam.eventbus.SimpleEventBus;
 import xyz.lexteam.tangerine.data.ConfigModel;
 import xyz.lexteam.tangerine.event.discord.DiscordReadyEvent;
+import xyz.lexteam.tangerine.listener.MessageListener;
 import xyz.lexteam.tangerine.util.JsonUtils;
 
 import java.io.File;
@@ -32,6 +35,7 @@ public final class Main implements Tangerine {
     private ConfigModel config;
     private IEventBus eventBus = new SimpleEventBus();
     private IDiscordClient discordClient;
+    private Dispatcher dispatcher = new SimpleDispatcher();
 
     public static void main(String[] args) throws DiscordException {
         new Main();
@@ -51,6 +55,7 @@ public final class Main implements Tangerine {
                 .withLogin(this.config.getDiscord().getEmail(), this.config.getDiscord().getPassword())
                 .login();
         this.discordClient.getDispatcher().registerListener(this);
+        this.discordClient.getDispatcher().registerListener(new MessageListener(this.dispatcher));
     }
 
     @EventSubscriber
@@ -66,5 +71,10 @@ public final class Main implements Tangerine {
     @Override
     public IDiscordClient getDiscordClient() {
         return this.discordClient;
+    }
+
+    @Override
+    public Dispatcher getCommandDispatcher() {
+        return this.dispatcher;
     }
 }
