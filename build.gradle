@@ -5,6 +5,7 @@ plugins {
     id 'eclipse'
 
     id 'net.minecrell.licenser' version '0.1.2'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 defaultTasks 'clean', 'licenseFormat'
 
@@ -37,6 +38,26 @@ license {
     header file('HEADER.txt')
     include '**/*.java'
     newLine = false
+}
+
+jar {
+    classifier = 'base'
+
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': version,
+                'Main-Class': 'xyz.lexteam.tangerine.Main'
+        )
+    }
+}
+
+shadowJar {
+    classifier = ''
+}
+
+artifacts {
+    archives shadowJar
 }
 
 task wrapper(type: Wrapper) {

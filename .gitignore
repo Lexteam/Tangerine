@@ -126,3 +126,7 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+
+### Tangerine ###
+config.json
