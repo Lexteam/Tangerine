@@ -8,6 +8,7 @@ package xyz.lexteam.tangerine.module;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.slf4j.LoggerFactory;
 import xyz.lexteam.tangerine.data.ModuleDescriptorModel;
 import xyz.lexteam.tangerine.guice.ModuleGuiceModule;
 import xyz.lexteam.tangerine.util.JsonUtils;
@@ -45,7 +46,8 @@ public class ModuleManager {
                     Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
                     Module module = (Module) moduleClass.getDeclaredAnnotation(Module.class);
 
-                    Injector injector = Guice.createInjector(new ModuleGuiceModule());
+                    Injector injector = Guice.createInjector(
+                            new ModuleGuiceModule(LoggerFactory.getLogger(module.name())));
                     Object instance = injector.getInstance(moduleClass);
 
                     this.modules.add(ModuleUtils.getContainer(module, instance));
