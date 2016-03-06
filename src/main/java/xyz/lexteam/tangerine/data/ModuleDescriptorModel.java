@@ -7,9 +7,9 @@
 package xyz.lexteam.tangerine.data;
 
 /**
- * Represents a model descriptor.
+ * Represents a module descriptor.
  */
-public class ModelDescriptorModel {
+public class ModuleDescriptorModel {
 
     private String mainClass;
 
