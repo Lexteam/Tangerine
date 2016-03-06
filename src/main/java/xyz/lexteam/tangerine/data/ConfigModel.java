@@ -13,6 +13,10 @@ public class ConfigModel {
 
     private Discord discord;
 
+    public Discord getDiscord() {
+        return this.discord;
+    }
+
     public static class Discord {
 
         private String email;
