@@ -6,7 +6,10 @@
  */
 package xyz.lexteam.tangerine.module;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import xyz.lexteam.tangerine.data.ModuleDescriptorModel;
+import xyz.lexteam.tangerine.guice.ModuleGuiceModule;
 import xyz.lexteam.tangerine.util.JsonUtils;
 import xyz.lexteam.tangerine.util.ModuleUtils;
 
@@ -41,15 +44,14 @@ public class ModuleManager {
                             new ModuleClassLoader(jarFile.toURI().toURL(), ModuleManager.class.getClassLoader());
                     Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
                     Module module = (Module) moduleClass.getDeclaredAnnotation(Module.class);
-                    Object instance = moduleClass.newInstance();
+
+                    Injector injector = Guice.createInjector(new ModuleGuiceModule());
+                    Object instance = injector.getInstance(moduleClass);
+
                     this.modules.add(ModuleUtils.getContainer(module, instance));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
