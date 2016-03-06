@@ -33,6 +33,14 @@ public class ModuleManager {
     public ModuleManager(Tangerine tangerine, File modulesDir) {
         this.tangerine = tangerine;
         this.modulesDir = modulesDir;
+
+        if (!modulesDir.exists()) {
+            modulesDir.mkdir();
+        }
+    }
+
+    public List<ModuleContainer> getModules() {
+        return this.modules;
     }
 
     public void loadAllModules() {

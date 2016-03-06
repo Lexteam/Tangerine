@@ -20,6 +20,7 @@ import xyz.lexteam.eventbus.SimpleEventBus;
 import xyz.lexteam.tangerine.data.ConfigModel;
 import xyz.lexteam.tangerine.event.discord.DiscordReadyEvent;
 import xyz.lexteam.tangerine.listener.MessageListener;
+import xyz.lexteam.tangerine.module.ModuleManager;
 import xyz.lexteam.tangerine.util.JsonUtils;
 
 import java.io.File;
@@ -34,6 +35,7 @@ public final class Main implements Tangerine {
 
     private ConfigModel config;
     private IEventBus eventBus = new SimpleEventBus();
+    private ModuleManager moduleManager;
     private IDiscordClient discordClient;
     private Dispatcher dispatcher = new SimpleDispatcher();
 
@@ -51,6 +53,9 @@ public final class Main implements Tangerine {
             System.exit(0);
         }
 
+        this.moduleManager = new ModuleManager(this, new File("modules/"));
+        this.moduleManager.loadAllModules();
+
         this.discordClient = new ClientBuilder()
                 .withLogin(this.config.getDiscord().getEmail(), this.config.getDiscord().getPassword())
                 .login();
@@ -60,12 +65,17 @@ public final class Main implements Tangerine {
 
     @EventSubscriber
     public void onReadyEvent(ReadyEvent event) {
-        this.eventBus.post(new DiscordReadyEvent(event.getClient()));
+        this.eventBus.post(new DiscordReadyEvent(this.discordClient));
     }
 
     @Override
     public IEventBus getEventBus() {
         return this.eventBus;
+    }
+
+    @Override
+    public ModuleManager getModuleManager() {
+        return this.moduleManager;
     }
 
     @Override
