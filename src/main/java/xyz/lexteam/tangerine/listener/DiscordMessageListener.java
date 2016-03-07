@@ -20,11 +20,11 @@ import xyz.lexteam.tangerine.data.Constants;
 /**
  * The message listener.
  */
-public class MessageListener implements IListener<MessageReceivedEvent> {
+public class DiscordMessageListener implements IListener<MessageReceivedEvent> {
 
     private final Dispatcher dispatcher;
 
-    public MessageListener(Dispatcher dispatcher) {
+    public DiscordMessageListener(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 

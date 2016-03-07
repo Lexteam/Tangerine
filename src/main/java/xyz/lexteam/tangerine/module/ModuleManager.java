@@ -77,10 +77,7 @@ public class ModuleManager {
             Object instance = injector.getInstance(moduleClass);
 
             this.modules.add(ModuleUtils.getContainer(module, instance));
-
-            // register module to both event buses
             this.tangerine.getEventBus().registerListener(instance);
-            this.tangerine.getDiscordClient().getDispatcher().registerListener(instance);
         } else {
             Main.LOGGER.warn("Module didn't have @Module annotation, cannot load!");
         }

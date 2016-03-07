@@ -21,6 +21,9 @@ class MainOptions {
     @Parameter(names = { "-m", "--modules" })
     private String modules = "";
 
+    @Parameter(names = { "-b", "--base" })
+    private boolean baseModuleEnabled = true;
+
     protected MainOptions(String[] args) {
         new JCommander(this, args);
     }
@@ -30,5 +33,9 @@ class MainOptions {
             return Arrays.asList(this.modules.split(","));
         }
         return Lists.newArrayList();
+    }
+
+    public boolean isBaseModuleEnabled() {
+        return this.baseModuleEnabled;
     }
 }

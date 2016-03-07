@@ -4,7 +4,7 @@
  * Copyright (c) 2016, Lexteam <http://www.lexteam.xyz/>
  * All Rights Reserved.
  */
-package xyz.lexteam.tangerine.command;
+package xyz.lexteam.tangerine.base.command;
 
 import com.beust.jcommander.internal.Lists;
 import com.sk89q.intake.CommandCallable;

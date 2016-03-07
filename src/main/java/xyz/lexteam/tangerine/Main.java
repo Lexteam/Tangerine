@@ -17,10 +17,10 @@ import sx.blah.discord.handle.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import xyz.lexteam.eventbus.IEventBus;
 import xyz.lexteam.eventbus.SimpleEventBus;
-import xyz.lexteam.tangerine.command.HelpCommand;
+import xyz.lexteam.tangerine.base.BaseModule;
 import xyz.lexteam.tangerine.data.model.ConfigModel;
 import xyz.lexteam.tangerine.event.discord.DiscordReadyEvent;
-import xyz.lexteam.tangerine.listener.MessageListener;
+import xyz.lexteam.tangerine.listener.DiscordMessageListener;
 import xyz.lexteam.tangerine.module.ModuleManager;
 import xyz.lexteam.tangerine.util.JsonUtils;
 
@@ -66,13 +66,15 @@ public final class Main implements Tangerine {
             }
         }
 
+        if (options.isBaseModuleEnabled()) {
+            this.moduleManager.loadModule(BaseModule.class);
+        }
+
         this.discordClient = new ClientBuilder()
                 .withLogin(this.config.getDiscord().getEmail(), this.config.getDiscord().getPassword())
                 .login();
         this.discordClient.getDispatcher().registerListener(this);
-        this.discordClient.getDispatcher().registerListener(new MessageListener(this.dispatcher));
-
-        this.dispatcher.registerCommand(new HelpCommand(this), "help");
+        this.discordClient.getDispatcher().registerListener(new DiscordMessageListener(this.dispatcher));
     }
 
     @EventSubscriber
