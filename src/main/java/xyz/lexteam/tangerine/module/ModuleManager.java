@@ -9,6 +9,7 @@ package xyz.lexteam.tangerine.module;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.LoggerFactory;
+import xyz.lexteam.tangerine.Main;
 import xyz.lexteam.tangerine.Tangerine;
 import xyz.lexteam.tangerine.data.ModuleDescriptorModel;
 import xyz.lexteam.tangerine.guice.ModuleGuiceModule;
@@ -61,17 +62,27 @@ public class ModuleManager {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Main.LOGGER.warn("Module didn't have config.json, cannot load!");
             }
         }
     }
 
     public void loadModule(Class<?> moduleClass) {
-        Module module = moduleClass.getDeclaredAnnotation(Module.class);
+        if (moduleClass.isAnnotationPresent(Module.class)) {
+            Module module = moduleClass.getDeclaredAnnotation(Module.class);
 
-        Injector injector = Guice.createInjector(
-                new ModuleGuiceModule(this.tangerine, LoggerFactory.getLogger(module.name())));
-        Object instance = injector.getInstance(moduleClass);
+            Injector injector = Guice.createInjector(
+                    new ModuleGuiceModule(this.tangerine, LoggerFactory.getLogger(module.name())));
+            Object instance = injector.getInstance(moduleClass);
 
-        this.modules.add(ModuleUtils.getContainer(module, instance));
+            this.modules.add(ModuleUtils.getContainer(module, instance));
+
+            // register module to both event buses
+            this.tangerine.getEventBus().registerListener(instance);
+            this.tangerine.getDiscordClient().getDispatcher().registerListener(instance);
+        } else {
+            Main.LOGGER.warn("Module didn't have @Module annotation, cannot load!");
+        }
     }
 }
