@@ -71,6 +71,7 @@ public class ModuleManager {
     public void loadModule(Class<?> moduleClass) {
         if (moduleClass.isAnnotationPresent(Module.class)) {
             Module module = moduleClass.getDeclaredAnnotation(Module.class);
+            Main.LOGGER.info("Loading " + module.name() + " v" + module.version());
 
             Injector injector = Guice.createInjector(
                     new ModuleGuiceModule(this.tangerine, LoggerFactory.getLogger(module.name())));
@@ -78,6 +79,7 @@ public class ModuleManager {
 
             this.modules.add(ModuleUtils.getContainer(module, instance));
             this.tangerine.getEventBus().registerListener(instance);
+            Main.LOGGER.info("Finished Loading " + module.name() + " v" + module.version());
         } else {
             Main.LOGGER.warn("Module didn't have @Module annotation, cannot load!");
         }

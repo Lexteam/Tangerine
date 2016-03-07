@@ -4,15 +4,15 @@
  * Copyright (c) 2016, Lexteam <http://www.lexteam.xyz/>
  * All Rights Reserved.
  */
-package xyz.lexteam.tangerine.event.discord;
+package xyz.lexteam.tangerine.event.state;
 
-import sx.blah.discord.api.IDiscordClient;
+import xyz.lexteam.tangerine.Tangerine;
 import xyz.lexteam.tangerine.event.Event;
 
 /**
- * Any Discord related event.
+ * Represents a state event.
  */
-public interface DiscordEvent extends Event {
+public interface StateEvent extends Event {
 
-    IDiscordClient getDiscordClient();
+    Tangerine getTangerine();
 }
