@@ -33,6 +33,6 @@ public class ModuleGuiceModule extends AbstractModule {
     protected void configure() {
         this.bind(Tangerine.class).toInstance(this.tangerine);
         this.bind(Logger.class).toInstance(this.logger);
-        this.bind(File.class).toInstance(this.configDir);
+        this.bind(File.class).annotatedWith(ConfigDir.class).toInstance(this.configDir);
     }
 }
