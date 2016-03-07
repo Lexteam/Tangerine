@@ -11,7 +11,7 @@ import com.google.inject.Injector;
 import org.slf4j.LoggerFactory;
 import xyz.lexteam.tangerine.Main;
 import xyz.lexteam.tangerine.Tangerine;
-import xyz.lexteam.tangerine.data.ModuleDescriptorModel;
+import xyz.lexteam.tangerine.data.model.ModuleDescriptorModel;
 import xyz.lexteam.tangerine.guice.ModuleGuiceModule;
 import xyz.lexteam.tangerine.util.JsonUtils;
 import xyz.lexteam.tangerine.util.ModuleUtils;

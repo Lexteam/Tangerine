@@ -17,7 +17,8 @@ import sx.blah.discord.handle.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import xyz.lexteam.eventbus.IEventBus;
 import xyz.lexteam.eventbus.SimpleEventBus;
-import xyz.lexteam.tangerine.data.ConfigModel;
+import xyz.lexteam.tangerine.command.HelpCommand;
+import xyz.lexteam.tangerine.data.model.ConfigModel;
 import xyz.lexteam.tangerine.event.discord.DiscordReadyEvent;
 import xyz.lexteam.tangerine.listener.MessageListener;
 import xyz.lexteam.tangerine.module.ModuleManager;
@@ -70,6 +71,8 @@ public final class Main implements Tangerine {
                 .login();
         this.discordClient.getDispatcher().registerListener(this);
         this.discordClient.getDispatcher().registerListener(new MessageListener(this.dispatcher));
+
+        this.dispatcher.registerCommand(new HelpCommand(this), "help");
     }
 
     @EventSubscriber

@@ -14,6 +14,8 @@ import sx.blah.discord.handle.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
+import xyz.lexteam.tangerine.data.Constants;
 
 /**
  * The message listener.
@@ -29,17 +31,16 @@ public class MessageListener implements IListener<MessageReceivedEvent> {
     @Override
     public void handle(MessageReceivedEvent event) {
         String content = event.getMessage().getContent();
-        if (content.startsWith("!")) {
+        if (content.startsWith(Constants.COMMAND_PREFIX)) {
             content = content.substring(1);
-            String[] split = content.split(" ");
-            content = content.substring(split[0].length());
 
             CommandLocals commandLocals = new CommandLocals();
             commandLocals.put(IMessage.class, event.getMessage());
             commandLocals.put(IChannel.class, event.getMessage().getChannel());
+            commandLocals.put(IUser.class, event.getMessage().getAuthor());
 
             try {
-                this.dispatcher.call(content, commandLocals, new String[] { split[0] });
+                this.dispatcher.call(content, commandLocals, new String[0]);
             } catch (CommandException e) {
                 e.printStackTrace();
             } catch (AuthorizationException e) {

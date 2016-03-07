@@ -4,7 +4,7 @@
  * Copyright (c) 2016, Lexteam <http://www.lexteam.xyz/>
  * All Rights Reserved.
  */
-package xyz.lexteam.tangerine.data;
+package xyz.lexteam.tangerine.data.model;
 
 /**
  * Represents the config.
