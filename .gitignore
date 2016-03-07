@@ -131,3 +131,4 @@ gradle-app.setting
 ### Tangerine ###
 config.json
 modules/
+config/

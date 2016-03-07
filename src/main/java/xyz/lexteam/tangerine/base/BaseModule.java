@@ -7,8 +7,10 @@
 package xyz.lexteam.tangerine.base;
 
 import com.google.inject.Inject;
+import xyz.lexteam.eventbus.Listener;
 import xyz.lexteam.tangerine.Tangerine;
 import xyz.lexteam.tangerine.base.command.HelpCommand;
+import xyz.lexteam.tangerine.event.state.ReadyStateEvent;
 import xyz.lexteam.tangerine.module.Module;
 
 /**
@@ -23,6 +25,10 @@ public class BaseModule {
     @Inject
     public BaseModule(Tangerine tangerine) {
         this.tangerine = tangerine;
-        this.tangerine.getCommandDispatcher().registerCommand(new HelpCommand(this.tangerine), "help");
+    }
+
+    @Listener
+    public void onReadyState(ReadyStateEvent event) {
+        event.getTangerine().getCommandDispatcher().registerCommand(new HelpCommand(this.tangerine), "help");
     }
 }
