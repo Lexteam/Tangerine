@@ -40,10 +40,10 @@ public final class Main implements Tangerine {
     private Dispatcher dispatcher = new SimpleDispatcher();
 
     public static void main(String[] args) throws DiscordException {
-        new Main();
+        new Main(new MainOptions(args));
     }
 
-    private Main() throws DiscordException {
+    private Main(MainOptions options) throws DiscordException {
         Optional<ConfigModel> configModel = JsonUtils.readModelFromFile(new File("config.json"), ConfigModel.class);
         if (configModel.isPresent()) {
             LOGGER.debug("Successfully loaded config.");
@@ -56,6 +56,15 @@ public final class Main implements Tangerine {
         this.moduleManager = new ModuleManager(this, new File("modules/"));
         this.moduleManager.loadAllModules();
 
+        for (String module : options.getModules()) {
+            try {
+                Class clazz = Class.forName(module);
+                this.moduleManager.loadModule(clazz);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         this.discordClient = new ClientBuilder()
                 .withLogin(this.config.getDiscord().getEmail(), this.config.getDiscord().getPassword())
                 .login();
@@ -65,7 +74,7 @@ public final class Main implements Tangerine {
 
     @EventSubscriber
     public void onReadyEvent(ReadyEvent event) {
-        this.eventBus.post(new DiscordReadyEvent(this.discordClient));
+        this.eventBus.post(new DiscordReadyEvent(event.getClient()));
     }
 
     @Override

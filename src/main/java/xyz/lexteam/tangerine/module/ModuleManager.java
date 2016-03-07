@@ -55,13 +55,7 @@ public class ModuleManager {
                     ModuleClassLoader moduleClassLoader =
                             new ModuleClassLoader(jarFile.toURI().toURL(), ModuleManager.class.getClassLoader());
                     Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
-                    Module module = (Module) moduleClass.getDeclaredAnnotation(Module.class);
-
-                    Injector injector = Guice.createInjector(
-                            new ModuleGuiceModule(this.tangerine, LoggerFactory.getLogger(module.name())));
-                    Object instance = injector.getInstance(moduleClass);
-
-                    this.modules.add(ModuleUtils.getContainer(module, instance));
+                    this.loadModule(moduleClass);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -69,5 +63,15 @@ public class ModuleManager {
                 }
             }
         }
+    }
+
+    public void loadModule(Class<?> moduleClass) {
+        Module module = moduleClass.getDeclaredAnnotation(Module.class);
+
+        Injector injector = Guice.createInjector(
+                new ModuleGuiceModule(this.tangerine, LoggerFactory.getLogger(module.name())));
+        Object instance = injector.getInstance(moduleClass);
+
+        this.modules.add(ModuleUtils.getContainer(module, instance));
     }
 }
