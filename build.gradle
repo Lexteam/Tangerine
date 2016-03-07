@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven'
 
     id 'idea'
     id 'eclipse'
@@ -15,7 +16,7 @@ targetCompatibility = 1.8
 group 'xyz.lexteam'
 version '1.0.0-SNAPSHOT'
 description = "Tangerine - Modular Discord bot framework."
-ext.url = 'http://www.lexteam.xyz/'
+ext.url = 'https://www.lexteam.xyz/'
 
 repositories {
     mavenCentral()
@@ -67,8 +68,67 @@ shadowJar {
     classifier = ''
 }
 
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
 artifacts {
     archives shadowJar
+    archives javadocJar
+    archives sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            if (project.hasProperty('lexRepoUser') && project.hasProperty('lexRepoPass')) {
+                // Lexteam Maven Repository
+                repository(url: 'http://lex1.lexteam.xyz:8888/repository/internal/') {
+                    authentication(userName: lexRepoUser, password: lexRepoPass)
+                }
+
+                snapshotRepository(url: 'http://lex1.lexteam.xyz:8888/repository/snapshots/') {
+                    authentication(userName: lexRepoUser, password: lexRepoPass)
+                }
+            }
+
+            pom {
+                artifactId = project.archivesBaseName.toLowerCase()
+
+                project {
+                    name = project.archivesBaseName
+                    description = project.description
+                    packaging = 'jar'
+                    url = project.url
+
+                    scm {
+                        url = "https://github.com/Lexteam/Tangerine"
+                        connection = "scm:git:https://github.com/Lexteam/Tangerine.git"
+                        developerConnection = "scm:git:git@github.com:Lexteam/Tangerine.git"
+                    }
+
+                    issueManagement {
+                        system = 'GitHub'
+                        url = 'https://github.com/Lexteam/Tangerine/issues'
+                    }
+
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'http://opensource.org/licenses/MIT'
+                            distribution = 'repo'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
