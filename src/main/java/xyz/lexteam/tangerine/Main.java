@@ -32,6 +32,7 @@ import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.modules.Configuration;
 import xyz.lexteam.eventbus.IEventBus;
 import xyz.lexteam.eventbus.SimpleEventBus;
 import xyz.lexteam.tangerine.base.BaseModule;
@@ -63,6 +64,9 @@ public final class Main implements Tangerine {
     }
 
     private Main(MainOptions options) throws DiscordException {
+        Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
+        Configuration.LOAD_EXTERNAL_MODULES = false;
+
         Optional<ConfigModel> configModel = JsonUtils.readModelFromFile(new File("config.json"), ConfigModel.class);
         if (configModel.isPresent()) {
             LOGGER.debug("Successfully loaded config.");
