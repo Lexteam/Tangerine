@@ -34,6 +34,7 @@ import xyz.lexteam.tangerine.util.ModuleUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -65,21 +66,26 @@ public class ModuleManager {
             return file.getName().endsWith(".jar");
         });
         for (File jarFile : jarFiles) {
-            Optional<ModuleDescriptorModel> descriptorModel = JsonUtils.readModelFromFile(
-                    new File(jarFile.getAbsolutePath(), "module.json"), ModuleDescriptorModel.class);
-            if (descriptorModel.isPresent()) {
-                try {
-                    ModuleClassLoader moduleClassLoader =
-                            new ModuleClassLoader(jarFile.toURI().toURL(), ModuleManager.class.getClassLoader());
-                    Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
-                    this.loadModule(moduleClass);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+            try {
+                Optional<ModuleDescriptorModel> descriptorModel = descriptorModel = JsonUtils.readModelFromUrl(
+                        new URL("jar:file:" + jarFile.getAbsolutePath() + "!/module.json"),
+                        ModuleDescriptorModel.class);
+                if (descriptorModel.isPresent()) {
+                    try {
+                        ModuleClassLoader moduleClassLoader =
+                                new ModuleClassLoader(jarFile.toURI().toURL(), ModuleManager.class.getClassLoader());
+                        Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
+                        this.loadModule(moduleClass);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Main.LOGGER.warn("Module didn't have module.json, cannot load!");
                 }
-            } else {
-                Main.LOGGER.warn("Module didn't have config.json, cannot load!");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
         }
     }

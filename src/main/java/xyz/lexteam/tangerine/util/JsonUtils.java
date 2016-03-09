@@ -28,6 +28,9 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Optional;
 
 /**
@@ -41,6 +44,15 @@ public final class JsonUtils {
         try {
             return Optional.of(GSON.fromJson(new FileReader(file), clazz));
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public static <T> Optional<T> readModelFromUrl(URL file, Class<T> clazz) {
+        try {
+            return Optional.of(GSON.fromJson(new InputStreamReader(file.openStream()), clazz));
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return Optional.empty();
