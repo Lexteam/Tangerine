@@ -25,12 +25,17 @@ package xyz.lexteam.tangerine.module;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import xyz.lexteam.spectre.Module;
+import xyz.lexteam.spectre.ModuleContainer;
+import xyz.lexteam.spectre.loader.ModuleLoader;
+import xyz.lexteam.spectre.loader.hook.Hook;
+import xyz.lexteam.spectre.loader.hook.HookInfo;
+import xyz.lexteam.spectre.loader.hook.Hooks;
 import xyz.lexteam.tangerine.Main;
 import xyz.lexteam.tangerine.Tangerine;
 import xyz.lexteam.tangerine.data.model.ModuleDescriptorModel;
 import xyz.lexteam.tangerine.guice.ModuleGuiceModule;
 import xyz.lexteam.tangerine.util.JsonUtils;
-import xyz.lexteam.tangerine.util.ModuleUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -44,17 +49,36 @@ import java.util.Optional;
  */
 public class ModuleManager {
 
-    private final File modulesDir;
     private final List<ModuleContainer> modules = new ArrayList<>();
     private final Tangerine tangerine;
+    private final ModuleLoader moduleLoader;
 
     public ModuleManager(Tangerine tangerine, File modulesDir) {
         this.tangerine = tangerine;
-        this.modulesDir = modulesDir;
+        this.moduleLoader = new ModuleLoader(modulesDir);
 
-        if (!modulesDir.exists()) {
-            modulesDir.mkdir();
-        }
+        this.moduleLoader.registerHook(Hooks.READ_DESCRIPTOR, new Hook() {
+            @Override
+            public void execute(HookInfo info) {
+                try {
+                    URL url = new URL("jar:file:" + info.get(File.class).getAbsolutePath() + "!/module.json");
+                    Optional<ModuleDescriptorModel> descriptorModel =
+                            JsonUtils.readModelFromUrl(url, ModuleDescriptorModel.class);
+                    if (descriptorModel.isPresent()) {
+                        info.put(xyz.lexteam.spectre.ModuleDescriptorModel.class, descriptorModel.get());
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.moduleLoader.registerHook(Hooks.CONSTRUCT_INSTANCE, new Hook() {
+            @Override
+            public void execute(HookInfo info) {
+                Class<?> moduleClass = info.get(Class.class);
+                info.put("instance", ModuleManager.this.loadModule(moduleClass, false));
+            }
+        });
     }
 
     public List<ModuleContainer> getModules() {
@@ -62,35 +86,10 @@ public class ModuleManager {
     }
 
     public void loadAllModules() {
-        File[] jarFiles = this.modulesDir.listFiles(file -> {
-            return file.getName().endsWith(".jar");
-        });
-        for (File jarFile : jarFiles) {
-            try {
-                Optional<ModuleDescriptorModel> descriptorModel = descriptorModel = JsonUtils.readModelFromUrl(
-                        new URL("jar:file:" + jarFile.getAbsolutePath() + "!/module.json"),
-                        ModuleDescriptorModel.class);
-                if (descriptorModel.isPresent()) {
-                    try {
-                        ModuleClassLoader moduleClassLoader =
-                                new ModuleClassLoader(jarFile.toURI().toURL(), ModuleManager.class.getClassLoader());
-                        Class moduleClass = moduleClassLoader.loadClass(descriptorModel.get().getMainClass());
-                        this.loadModule(moduleClass);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Main.LOGGER.warn("Module didn't have module.json, cannot load!");
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }
+        this.modules.addAll(this.moduleLoader.loadAllModules());
     }
 
-    public void loadModule(Class<?> moduleClass) {
+    public Object loadModule(Class<?> moduleClass, boolean createContainer) {
         if (moduleClass.isAnnotationPresent(Module.class)) {
             Module module = moduleClass.getDeclaredAnnotation(Module.class);
             Main.LOGGER.info("Loading " + module.name() + " v" + module.version());
@@ -98,11 +97,43 @@ public class ModuleManager {
             Injector injector = Guice.createInjector(new ModuleGuiceModule(this.tangerine, module));
             Object instance = injector.getInstance(moduleClass);
 
-            this.modules.add(ModuleUtils.getContainer(module, instance));
+            if (createContainer) {
+                this.modules.add(new ModuleContainer() {
+                    @Override
+                    public String getId() {
+                        return module.id();
+                    }
+
+                    @Override
+                    public String getName() {
+                        return module.name();
+                    }
+
+                    @Override
+                    public String getVersion() {
+                        return module.version();
+                    }
+
+                    @Override
+                    public Object getInstance() {
+                        return instance;
+                    }
+
+                    @Override
+                    public xyz.lexteam.spectre.ModuleDescriptorModel getDescriptor() {
+                        return () -> moduleClass.getName();
+                    }
+                });
+            }
+
             this.tangerine.getEventBus().registerListener(instance);
             Main.LOGGER.info("Finished Loading " + module.name() + " v" + module.version());
+
+            return instance;
         } else {
             Main.LOGGER.warn("Module didn't have @Module annotation, cannot load!");
         }
+
+        return null;
     }
 }

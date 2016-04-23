@@ -14,7 +14,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group 'xyz.lexteam'
-version '1.0.0-SNAPSHOT'
+version '1.0.1-SNAPSHOT'
 description = "Tangerine - Modular Discord bot framework."
 ext.url = 'https://www.lexteam.xyz/'
 
@@ -22,10 +22,10 @@ repositories {
     mavenCentral()
     jcenter()
     maven {
-        url 'https://repo.lexteam.xyz/maven/releases/'
+        url 'http://repo.lexteam.xyz/maven/releases/'
     }
     maven {
-        url 'https://repo.lexteam.xyz/maven/snapshots/'
+        url 'http://repo.lexteam.xyz/maven/snapshots/'
     }
     maven {
         url 'https://jitpack.io'
@@ -38,6 +38,7 @@ repositories {
 dependencies {
     compile 'com.github.austinv11:Discord4j:2.4.4'
     compile 'xyz.lexteam:eventbus:1.5'
+    compile 'xyz.lexteam:spectre:1.0.0-SNAPSHOT'
     compile 'com.google.inject:guice:4.0'
     compile 'org.slf4j:slf4j-simple:1.7.18'
     compile 'com.sk89q:intake:3.1.2'
