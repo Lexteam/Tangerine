@@ -82,14 +82,14 @@ public final class Main implements Tangerine {
         for (String module : options.getModules()) {
             try {
                 Class clazz = Class.forName(module);
-                this.moduleManager.loadModule(clazz);
+                this.moduleManager.loadModule(clazz, true);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
 
         if (options.isBaseModuleEnabled()) {
-            this.moduleManager.loadModule(BaseModule.class);
+            this.moduleManager.loadModule(BaseModule.class, true);
         }
 
         LOGGER.debug("Loading Discord client");

@@ -26,8 +26,8 @@ package xyz.lexteam.tangerine.guice;
 import com.google.inject.AbstractModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.lexteam.spectre.Module;
 import xyz.lexteam.tangerine.Tangerine;
-import xyz.lexteam.tangerine.module.Module;
 
 import java.io.File;
 

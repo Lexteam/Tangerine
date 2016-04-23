@@ -26,11 +26,12 @@ package xyz.lexteam.tangerine.data.model;
 /**
  * Represents a module descriptor.
  */
-public class ModuleDescriptorModel {
+public class ModuleDescriptorModel implements xyz.lexteam.spectre.ModuleDescriptorModel {
 
     private String mainClass;
 
-    public String getMainClass() {
+    @Override
+    public String getModuleClass() {
         return this.mainClass;
     }
 }
