@@ -20,6 +20,7 @@ ext.url = 'https://www.lexteam.xyz/'
 
 repositories {
     mavenCentral()
+    jcenter()
     maven {
         url 'https://repo.lexteam.xyz/maven/releases/'
     }
@@ -30,18 +31,12 @@ repositories {
         url 'https://jitpack.io'
     }
     maven {
-        url 'http://lutece.paris.fr/nexus/content/repositories/lutece_third_party/'
-    }
-    maven {
-        url 'http://jcenter.bintray.com/'
-    }
-    maven {
         url 'http://maven.sk89q.com/repo/'
     }
 }
 
 dependencies {
-    compile 'com.github.austinv11:Discord4j:dd0be93'
+    compile 'com.github.austinv11:Discord4j:2.4.4'
     compile 'xyz.lexteam:eventbus:1.5'
     compile 'com.google.inject:guice:4.0'
     compile 'org.slf4j:slf4j-simple:1.7.18'

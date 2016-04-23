@@ -27,7 +27,7 @@ import com.sk89q.intake.CommandException;
 import com.sk89q.intake.context.CommandLocals;
 import com.sk89q.intake.dispatcher.Dispatcher;
 import com.sk89q.intake.util.auth.AuthorizationException;
-import sx.blah.discord.handle.IListener;
+import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
