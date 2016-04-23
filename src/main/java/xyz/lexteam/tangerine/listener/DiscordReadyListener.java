@@ -25,8 +25,8 @@ package xyz.lexteam.tangerine.listener;
 
 import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import xyz.lexteam.spectre.ModuleContainer;
 import xyz.lexteam.tangerine.Tangerine;
-import xyz.lexteam.tangerine.module.ModuleContainer;
 
 /**
  * The ready listener

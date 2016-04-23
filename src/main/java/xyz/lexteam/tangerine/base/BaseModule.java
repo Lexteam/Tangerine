@@ -25,10 +25,10 @@ package xyz.lexteam.tangerine.base;
 
 import com.google.inject.Inject;
 import xyz.lexteam.eventbus.Listener;
+import xyz.lexteam.spectre.Module;
 import xyz.lexteam.tangerine.Tangerine;
 import xyz.lexteam.tangerine.base.command.HelpCommand;
 import xyz.lexteam.tangerine.event.state.ReadyStateEvent;
-import xyz.lexteam.tangerine.module.Module;
 
 /**
  * The base Tangerine module.
