@@ -21,7 +21,10 @@ ext.url = 'https://www.lexteam.xyz/'
 repositories {
     mavenCentral()
     maven {
-        url 'http://repo.lexteam.xyz/repository/public/'
+        url 'https://repo.lexteam.xyz/maven/releases/'
+    }
+    maven {
+        url 'https://repo.lexteam.xyz/maven/snapshots/'
     }
     maven {
         url 'https://jitpack.io'
@@ -39,7 +42,7 @@ repositories {
 
 dependencies {
     compile 'com.github.austinv11:Discord4j:dd0be93'
-    compile 'xyz.lexteam:eventbus:1.4'
+    compile 'xyz.lexteam:eventbus:1.5'
     compile 'com.google.inject:guice:4.0'
     compile 'org.slf4j:slf4j-simple:1.7.18'
     compile 'com.sk89q:intake:3.1.2'
@@ -87,15 +90,9 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            if (project.hasProperty('lexRepoUser') && project.hasProperty('lexRepoPass')) {
-                // Lexteam Maven Repository
-                repository(url: 'http://lex1.lexteam.xyz:8888/repository/internal/') {
-                    authentication(userName: lexRepoUser, password: lexRepoPass)
-                }
-
-                snapshotRepository(url: 'http://lex1.lexteam.xyz:8888/repository/snapshots/') {
-                    authentication(userName: lexRepoUser, password: lexRepoPass)
-                }
+            if (System.getenv('MAVEN_RELEASES') != null) {
+                repository(url: 'file://' + System.getenv('MAVEN_RELEASES'))
+                snapshotRepository(url: 'file://' + System.getenv('MAVEN_SNAPSHOTS'))
             }
 
             pom {
@@ -132,5 +129,5 @@ uploadArchives {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    gradleVersion = '2.12'
 }

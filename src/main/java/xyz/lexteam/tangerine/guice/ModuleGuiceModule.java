@@ -44,6 +44,9 @@ public class ModuleGuiceModule extends AbstractModule {
         this.tangerine = tangerine;
         this.logger = LoggerFactory.getLogger(module.name());
         this.configDir = new File("config", module.id());
+        if (!this.configDir.exists()) {
+            this.configDir.mkdirs();
+        }
     }
 
     @Override
